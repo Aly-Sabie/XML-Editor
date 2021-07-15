@@ -18,6 +18,23 @@ HuffmanTree::HuffmanTree(QString input) {
 
 }
 
+QString HuffmanTree::get_binary() {
+    QChar container;
+    QString output = "";
+    for(int i = 0; i < string.length(); i++) {
+        container = string[i];
+        for(int j = 0; j < codes_mapping.length();j++) {
+            if(container == codes_mapping[j][0]) {
+                output = output + codes_mapping[j][1];
+            }
+
+        }
+
+    }
+
+    return output;
+}
+
 
 void HuffmanTree::vector_creation(QString input) {
     bool flag;
@@ -125,4 +142,14 @@ void HuffmanTree::map_generation(HuffmanNode *r, QString code) {
 
 
 
+}
+
+
+QString HuffmanTree::test() {
+    QString output = "";
+    for(int i = 0; i < map_count; i++) {
+        output = output + codes_mapping[i][0] + "-" + codes_mapping[i][1] + "  ";
+    }
+
+    return output;
 }
