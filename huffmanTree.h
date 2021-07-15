@@ -15,6 +15,14 @@ public:
 
 public:
     HuffmanTree(QString input);
+    
+    
+
+private:
+    void vector_creation(QString input);
+    void huffman_heap_building();
+    void huffman_tree_building();
+    void map_generation(HuffmanNode *r, QString code);
 
 
 
