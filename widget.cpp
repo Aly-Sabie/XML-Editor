@@ -330,4 +330,34 @@ void Widget::on_Fix_button_clicked()
     qDebug()<< "***********************************";
 }
 
+//the rest of buttons
+
+void Widget::on_prettify_btn_clicked()
+{
+    strToTree();
+    ui->textEdit_2->setPlainText(t.xml_spaces(1));
+
+}
+
+void Widget::on_removeSpaces_btn_clicked()
+{
+    strToTree();
+    ui->textEdit_2->setPlainText(t.xml_spaces(0));
+}
+
+void Widget::on_xmlToJSON_btn_clicked()
+
+{
+    strToTree();
+    ui->textEdit_2->setPlainText(t.XMLtoJSON());
+}
+
+void Widget::on_compression_btn_clicked()
+{
+    HuffmanTree huffman(ui->textEdit->toPlainText());
+    ui->textEdit_2->setPlainText(huffman.get_binary());
+}
+
+
+
 
