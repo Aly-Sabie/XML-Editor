@@ -193,6 +193,130 @@ void Widget::fixErrors(){
     ui->textEdit_2->setPlainText(C);
 }
 
+
+//fn to convert UI string to Tree
+void Widget::strToTree(){
+    QString B;
+    QStack<Node*> treeStack;
+    Node * root_ptr;
+    QString tag;
+    QString attributes;
+    B = ui->textEdit->toPlainText();
+    int x = B.length();
+
+    for(int i = 0; i < x; i++){
+        if(B[i] == '<'){
+
+            if(B[i+1] == '!' || B[i+1] == '?'){
+                continue;
+            }
+
+            //tags
+            if(B[i+1] != '/'){
+                QString subStr = B.mid(i+1, -1);
+                qDebug()<<"open tag";
+
+                //tags with attributes
+                    if(subStr.indexOf(" ") < subStr.indexOf(">") && subStr.indexOf(" ") < subStr.indexOf("/")){
+                        tag = subStr.mid(0,subStr.indexOf(" "));
+                        Node * x = new Node(tag);
+                        QVector<QString> attr(2);
+
+                        subStr = subStr.mid(subStr.indexOf(" "), -1);
+
+                        while(subStr[0] != '>' && subStr[0] != '/'){
+                            attr[0] = subStr.mid(1, subStr.indexOf("=") - 1);
+                            subStr = subStr.mid(subStr.indexOf("=") + 2, -1);
+                            attr[1] = subStr.mid(0, subStr.indexOf('"'));
+                            x->attributesVec.append(attr);
+                            subStr = subStr.mid(subStr.indexOf('"') + 1, -1);
+                        }
+
+                        //pop if closed with the same opening tag
+                        if(subStr[0] == '/'){
+                            qDebug()<<"PUSHED" << x->get_tag();
+                            if(!treeStack.isEmpty()){
+                                treeStack.top()->childrenVec.append(x);
+                                x->set_depth(treeStack.size());
+                            }
+                            else{
+                                root_ptr = x;
+                            }
+                            treeStack.push(x);
+                            qDebug() << "closed" << treeStack.top()->get_tag();
+                            treeStack.pop();
+                            continue;
+
+                        }
+
+                        //after open tag
+                        subStr = subStr.mid(subStr.indexOf(">") + 1, -1);
+                        if(subStr[0]!= '<' && subStr[0]!= '\n'){
+                            QString data = subStr.mid(0, subStr.indexOf("<"));
+                            x->set_data(data);
+                        }
+
+                        //treeStack.top().childrenVec.append(&x);
+                        qDebug()<<"PUSHED" << x->get_tag();
+                        if(!treeStack.isEmpty()){
+                            treeStack.top()->childrenVec.append(x);
+                            x->set_depth(treeStack.size());
+                        }
+                        else{
+                            root_ptr = x;
+                        }
+
+                        treeStack.push(x);
+                    }
+
+
+                //tags without attributes
+                    else if (subStr.indexOf(" ") > subStr.indexOf(">")){
+                        tag = subStr.mid(0,subStr.indexOf(">"));
+                        Node *x = new Node(tag);
+                        subStr = subStr.mid(subStr.indexOf(">") + 1, -1);
+                        if(subStr[0]!= '<'&& subStr[0]!= '\n'){
+                            QString data = subStr.mid(0, subStr.indexOf("<"));
+                            x->set_data(data);
+                        }
+                        qDebug()<<"PUSHED with no attr" << x->get_tag();
+                        if(!treeStack.isEmpty()){
+                            treeStack.top()->childrenVec.append(x);
+                            x->set_depth(treeStack.size());
+                        }
+                        else{
+                            root_ptr = x;
+                        }
+
+                        treeStack.push(x);
+                    }
+            }
+            else if(B[i+1] == '/'){
+
+                qDebug() << "closed" << treeStack.top()->get_tag();
+                treeStack.pop();
+            }
+
+
+        }
+
+
+
+    }
+
+    t.set_root(root_ptr);
+
+
+
+}
+
+
+
+
+
+
+
+
 //adding the buttons to call the function
 void Widget::on_gotoAnother_clicked()
 {
