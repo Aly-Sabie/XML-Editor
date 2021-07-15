@@ -15,9 +15,9 @@ public:
 
 public:
     HuffmanTree(QString input);
+    QString get_binary();
+    QString test();
     
-    
-
 private:
     void vector_creation(QString input);
     void huffman_heap_building();
